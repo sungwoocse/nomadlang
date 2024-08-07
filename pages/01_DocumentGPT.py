@@ -1,29 +1,34 @@
-import time
+import os
+import streamlit as st
 from langchain.document_loaders import UnstructuredFileLoader
 from langchain.embeddings import CacheBackedEmbeddings, OpenAIEmbeddings
 from langchain.storage import LocalFileStore
 from langchain.text_splitter import CharacterTextSplitter
 from langchain.vectorstores.faiss import FAISS
-import streamlit as st
 
-st.set_page_config(
-    page_title="DocumentGPT",
-    page_icon="📃",
-)
-
+# 프로젝트 루트 디렉토리 경로 설정
+ROOT_DIR = os.path.dirname(os.path.dirname(os.path.abspath(__file__)))
 
 def embed_file(file):
     file_content = file.read()
-    file_path = f"./.cache/files/{file.name}"
+    cache_dir = os.path.join(ROOT_DIR, ".cache", "files")
+    os.makedirs(cache_dir, exist_ok=True)
+    file_path = os.path.join(cache_dir, file.name)
+    
     with open(file_path, "wb") as f:
         f.write(file_content)
-    cache_dir = LocalFileStore(f"./.cache/embeddings/{file.name}")
+    
+    embeddings_dir = os.path.join(ROOT_DIR, ".cache", "embeddings", file.name)
+    os.makedirs(embeddings_dir, exist_ok=True)
+    cache_dir = LocalFileStore(embeddings_dir)
+    
     splitter = CharacterTextSplitter.from_tiktoken_encoder(
         separator="\n",
         chunk_size=600,
         chunk_overlap=100,
     )
-    loader = UnstructuredFileLoader("./files/chapter_one.txt")
+    
+    loader = UnstructuredFileLoader(file_path)
     docs = loader.load_and_split(text_splitter=splitter)
     embeddings = OpenAIEmbeddings()
     cached_embeddings = CacheBackedEmbeddings.from_bytes_store(embeddings, cache_dir)
