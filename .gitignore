@@ -2,3 +2,5 @@ env/
 .env
 .cache/
 .streamlit
+podcast.mp4
+files/
