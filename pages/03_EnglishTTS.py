@@ -38,35 +38,38 @@ def convert_speech_to_markdown(uploaded_file, progress_bar):
 
     # Save uploaded file temporarily
     temp_file = Path(uploaded_file.name)
-    with open(temp_file, "wb") as f:
-        f.write(uploaded_file.getbuffer())
+    try:
+        with open(temp_file, "wb") as f:
+            f.write(uploaded_file.getbuffer())
 
-    # Transcribe the audio
-    with warnings.catch_warnings():
-        warnings.simplefilter("ignore")
-        result = model.transcribe(str(temp_file))
-    
-    progress_bar.progress(0)
-    transcribed_text = result["text"]
-    
-    # Simulate progress
-    for i in range(100):
-        progress_bar.progress(i / 100)
-        time.sleep(0.01)
+        # Transcribe the audio
+        with warnings.catch_warnings():
+            warnings.simplefilter("ignore")
+            result = model.transcribe(str(temp_file))
+        
+        progress_bar.progress(0)
+        transcribed_text = result["text"]
+        
+        # Simulate progress
+        for i in range(100):
+            progress_bar.progress(i / 100)
+            time.sleep(0.01)
 
-    # Delete the temporary file
-    temp_file.unlink()
+        # Create markdown content
+        markdown_content = f"# Transcription of {uploaded_file.name}\n\n{transcribed_text}\n"
 
-    # Create markdown content
-    markdown_content = f"# Transcription of {uploaded_file.name}\n\n{transcribed_text}\n"
+        # Save as markdown file
+        markdown_file_path = markdown_dir / f"{uploaded_file.name.rsplit('.', 1)[0]}.md"
+        
+        with open(markdown_file_path, "w", encoding="utf-8") as f:
+            f.write(markdown_content)
+        
+        return markdown_file_path, transcribed_text
 
-    # Save as markdown file
-    markdown_file_path = markdown_dir / f"{uploaded_file.name.rsplit('.', 1)[0]}.md"
-    
-    with open(markdown_file_path, "w", encoding="utf-8") as f:
-        f.write(markdown_content)
-    
-    return markdown_file_path, transcribed_text
+    finally:
+        # Ensure temporary file is deleted even if an exception occurs
+        if temp_file.exists():
+            temp_file.unlink()
 
 st.title("Speech to Markdown Converter")
 
