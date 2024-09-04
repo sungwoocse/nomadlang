@@ -7,6 +7,8 @@ st.set_page_config(
     page_icon="💻",
 )
 
+MAX_FILES = 50  # Maximum number of files that can be uploaded
+
 def convert_code_to_markdown(uploaded_files):
     markdown_content = ""
     
@@ -40,10 +42,11 @@ def save_markdown_file(content):
 st.title("Code to Markdown Converter")
 
 st.markdown(
-    """
+    f"""
 Welcome!
             
 Upload Python (.py) or JavaScript (.js) files to convert them into a single Markdown file.
+You can upload up to {MAX_FILES} files at once.
 """
 )
 
@@ -54,6 +57,10 @@ uploaded_files = st.file_uploader(
 )
 
 if uploaded_files:
+    if len(uploaded_files) > MAX_FILES:
+        st.warning(f"You've uploaded {len(uploaded_files)} files. Only the first {MAX_FILES} will be processed.")
+        uploaded_files = uploaded_files[:MAX_FILES]
+    
     st.write("Converting code files to Markdown...")
     markdown_content = convert_code_to_markdown(uploaded_files)
     markdown_path = save_markdown_file(markdown_content)
