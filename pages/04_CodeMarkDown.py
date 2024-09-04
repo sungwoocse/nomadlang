@@ -57,23 +57,29 @@ uploaded_files = st.file_uploader(
 )
 
 if uploaded_files:
+    st.write(f"Files uploaded: {len(uploaded_files)}")
+    file_names = [file.name for file in uploaded_files]
+    st.write("Uploaded files:")
+    st.write(", ".join(file_names))
+
     if len(uploaded_files) > MAX_FILES:
         st.warning(f"You've uploaded {len(uploaded_files)} files. Only the first {MAX_FILES} will be processed.")
         uploaded_files = uploaded_files[:MAX_FILES]
     
-    st.write("Converting code files to Markdown...")
-    markdown_content = convert_code_to_markdown(uploaded_files)
-    markdown_path = save_markdown_file(markdown_content)
-    st.success(f"Conversion complete! Markdown file saved at: {markdown_path}")
-    
-    st.markdown("### Preview of the Markdown content:")
-    st.text_area("Markdown Content", markdown_content, height=300)
-    
-    st.download_button(
-        label="Download Markdown File",
-        data=markdown_content,
-        file_name="code_collection.md",
-        mime="text/markdown",
-    )
+    if st.button("Confirm and Convert"):
+        st.write("Converting code files to Markdown...")
+        markdown_content = convert_code_to_markdown(uploaded_files)
+        markdown_path = save_markdown_file(markdown_content)
+        st.success(f"Conversion complete! Markdown file saved at: {markdown_path}")
+        
+        st.markdown("### Preview of the Markdown content:")
+        st.text_area("Markdown Content", markdown_content, height=300)
+        
+        st.download_button(
+            label="Download Markdown File",
+            data=markdown_content,
+            file_name="code_collection.md",
+            mime="text/markdown",
+        )
 else:
-    st.info("Please upload Python (.py) or JavaScript (.js) files to begin conversion.")
+    st.info("Please upload Python (.py) or JavaScript (.js) files and then click 'Confirm and Convert' to begin conversion.")
