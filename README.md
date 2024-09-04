@@ -24,11 +24,15 @@ GPT-4, Langchain 을 활용하여 AI 웹 서비스를 구축하는 방법을 A �
 
 ### DocumentGPT
 
+pdf to MarkDown
+
 법률. 의학 등 어려운 용어로 가득한 각종 문서. AI로 빠르게 파악하고 싶다면?
 
 AI로 신속하고 정확하게 문서 내용을 파악하고 정리한 뒤, 필요한 부분만 쏙쏙 골라내어 사용하세요. DocumentGPT 챗봇을 사용하면, AI가 문서(.txt, .pdf, .docx 등)를 꼼꼼하게 읽고, 해당 문서에 관한 질문에 척척 답변해 줍니다.
 
 ### PrivateGPT
+
+English TTS
 
 회사 기밀이 유출될까 걱정된다면? 이제 나만이 볼 수 있는 비공개 GPT를 만들어 활용하세요!
 
